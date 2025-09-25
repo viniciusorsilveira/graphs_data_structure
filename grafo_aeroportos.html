@@ -1,0 +1,170 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 800px;
+                 background-color: #222222;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+             #config {
+                 float: left;
+                 width: 400px;
+                 height: 600px;
+             }
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+            <div id="config"></div>
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#97c2fc", "font": {"color": "white"}, "id": "CDG", "label": "CDG", "shape": "dot", "title": "Aeroporto Charles de Gaulle (Paris)"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "IST", "label": "IST", "shape": "dot", "title": "Aeroporto de Istambul"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "JFK", "label": "JFK", "shape": "dot", "title": "Aeroporto Internacional John F. Kennedy (Nova York)"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "DOH", "label": "DOH", "shape": "dot", "title": "Aeroporto Internacional Hamad (Doha)"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "GIG", "label": "GIG", "shape": "dot", "title": "Aeroporto Internacional do Gale\u00e3o (Rio de Janeiro)"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "GRU", "label": "GRU", "shape": "dot", "title": "Aeroporto Internacional de Guarulhos (S\u00e3o Paulo)"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "LAX", "label": "LAX", "shape": "dot", "title": "Aeroporto Internacional de Los Angeles"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "NRT", "label": "NRT", "shape": "dot", "title": "Aeroporto Internacional de Narita (T\u00f3quio)"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "FRA", "label": "FRA", "shape": "dot", "title": "Aeroporto de Frankfurt"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "AMS", "label": "AMS", "shape": "dot", "title": "Aeroporto Schiphol de Amsterd\u00e3"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "DXB", "label": "DXB", "shape": "dot", "title": "Aeroporto Internacional de Dubai"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "HND", "label": "HND", "shape": "dot", "title": "Aeroporto Internacional de Haneda (T\u00f3quio)"}]);
+                  edges = new vis.DataSet([{"from": "CDG", "title": "Aeroporto Charles de Gaulle (Paris) ---- Aeroporto de Istambul (2214 km)", "to": "IST", "value": 2213.625651922591}, {"from": "CDG", "title": "Aeroporto Charles de Gaulle (Paris) ---- Aeroporto Internacional John F. Kennedy (Nova York) (5834 km)", "to": "JFK", "value": 5833.657834206258}, {"from": "CDG", "title": "Aeroporto Charles de Gaulle (Paris) ---- Aeroporto Internacional de Dubai (5239 km)", "to": "DXB", "value": 5238.628563149584}, {"from": "CDG", "title": "Aeroporto Charles de Gaulle (Paris) ---- Aeroporto de Frankfurt (449 km)", "to": "FRA", "value": 449.00346723415527}, {"from": "CDG", "title": "Aeroporto Charles de Gaulle (Paris) ---- Aeroporto Internacional do Gale\u00e3o (Rio de Janeiro) (9184 km)", "to": "GIG", "value": 9184.301994124573}, {"from": "CDG", "title": "Aeroporto Charles de Gaulle (Paris) ---- Aeroporto Internacional de Guarulhos (S\u00e3o Paulo) (9405 km)", "to": "GRU", "value": 9405.210732356692}, {"from": "CDG", "title": "Aeroporto Charles de Gaulle (Paris) ---- Aeroporto Internacional de Haneda (T\u00f3quio) (9707 km)", "to": "HND", "value": 9706.840703664566}, {"from": "CDG", "title": "Aeroporto Charles de Gaulle (Paris) ---- Aeroporto Internacional de Los Angeles (9103 km)", "to": "LAX", "value": 9102.518324193517}, {"from": "CDG", "title": "Aeroporto Charles de Gaulle (Paris) ---- Aeroporto Internacional de Narita (T\u00f3quio) (9710 km)", "to": "NRT", "value": 9709.942321662693}, {"from": "CDG", "title": "Aeroporto Charles de Gaulle (Paris) ---- Aeroporto Internacional Hamad (Doha) (4969 km)", "to": "DOH", "value": 4969.19529054568}, {"from": "IST", "title": "Aeroporto de Istambul ---- Aeroporto Internacional de Narita (T\u00f3quio) (8979 km)", "to": "NRT", "value": 8979.11471232327}, {"from": "IST", "title": "Aeroporto de Istambul ---- Aeroporto Internacional John F. Kennedy (Nova York) (8027 km)", "to": "JFK", "value": 8026.808379671905}, {"from": "IST", "title": "Aeroporto de Istambul ---- Aeroporto Internacional de Los Angeles (11002 km)", "to": "LAX", "value": 11002.320217286713}, {"from": "JFK", "title": "Aeroporto Internacional John F. Kennedy (Nova York) ---- Aeroporto Internacional de Los Angeles (3974 km)", "to": "LAX", "value": 3974.2022002734902}, {"from": "JFK", "title": "Aeroporto Internacional John F. Kennedy (Nova York) ---- Aeroporto Internacional de Narita (T\u00f3quio) (10830 km)", "to": "NRT", "value": 10830.47402753673}, {"from": "DOH", "title": "Aeroporto Internacional Hamad (Doha) ---- Aeroporto Internacional John F. Kennedy (Nova York) (10769 km)", "to": "JFK", "value": 10769.473368201696}, {"from": "DOH", "title": "Aeroporto Internacional Hamad (Doha) ---- Aeroporto de Frankfurt (4588 km)", "to": "FRA", "value": 4587.5386136503985}, {"from": "DOH", "title": "Aeroporto Internacional Hamad (Doha) ---- Aeroporto Internacional de Dubai (378 km)", "to": "DXB", "value": 377.7332012600379}, {"from": "DOH", "title": "Aeroporto Internacional Hamad (Doha) ---- Aeroporto Internacional de Narita (T\u00f3quio) (8298 km)", "to": "NRT", "value": 8297.683316382698}, {"from": "DOH", "title": "Aeroporto Internacional Hamad (Doha) ---- Aeroporto Internacional de Guarulhos (S\u00e3o Paulo) (11858 km)", "to": "GRU", "value": 11858.337895653382}, {"from": "DOH", "title": "Aeroporto Internacional Hamad (Doha) ---- Aeroporto de Istambul (2756 km)", "to": "IST", "value": 2755.929091794752}, {"from": "GIG", "title": "Aeroporto Internacional do Gale\u00e3o (Rio de Janeiro) ---- Aeroporto Internacional John F. Kennedy (Nova York) (7729 km)", "to": "JFK", "value": 7729.339601507015}, {"from": "GIG", "title": "Aeroporto Internacional do Gale\u00e3o (Rio de Janeiro) ---- Aeroporto Internacional de Guarulhos (S\u00e3o Paulo) (337 km)", "to": "GRU", "value": 336.79232067734875}, {"from": "GRU", "title": "Aeroporto Internacional de Guarulhos (S\u00e3o Paulo) ---- Aeroporto Internacional John F. Kennedy (Nova York) (7664 km)", "to": "JFK", "value": 7663.9899320106815}, {"from": "GRU", "title": "Aeroporto Internacional de Guarulhos (S\u00e3o Paulo) ---- Aeroporto Internacional de Los Angeles (9919 km)", "to": "LAX", "value": 9918.586589804721}, {"from": "GRU", "title": "Aeroporto Internacional de Guarulhos (S\u00e3o Paulo) ---- Aeroporto de Istambul (10559 km)", "to": "IST", "value": 10559.421767944134}, {"from": "LAX", "title": "Aeroporto Internacional de Los Angeles ---- Aeroporto Internacional de Narita (T\u00f3quio) (8754 km)", "to": "NRT", "value": 8753.827201283713}, {"from": "FRA", "title": "Aeroporto de Frankfurt ---- Aeroporto Internacional John F. Kennedy (Nova York) (6189 km)", "to": "JFK", "value": 6189.446247195561}, {"from": "FRA", "title": "Aeroporto de Frankfurt ---- Aeroporto Internacional do Gale\u00e3o (Rio de Janeiro) (9568 km)", "to": "GIG", "value": 9568.434207775508}, {"from": "FRA", "title": "Aeroporto de Frankfurt ---- Aeroporto Internacional de Guarulhos (S\u00e3o Paulo) (9798 km)", "to": "GRU", "value": 9798.206333014257}, {"from": "FRA", "title": "Aeroporto de Frankfurt ---- Aeroporto Internacional de Narita (T\u00f3quio) (9367 km)", "to": "NRT", "value": 9366.636221152896}, {"from": "FRA", "title": "Aeroporto de Frankfurt ---- Aeroporto Internacional de Haneda (T\u00f3quio) (9361 km)", "to": "HND", "value": 9360.841294776239}, {"from": "FRA", "title": "Aeroporto de Frankfurt ---- Aeroporto de Istambul (1837 km)", "to": "IST", "value": 1837.3654343092544}, {"from": "FRA", "title": "Aeroporto de Frankfurt ---- Aeroporto Internacional de Los Angeles (9322 km)", "to": "LAX", "value": 9321.998213962279}, {"from": "AMS", "title": "Aeroporto Schiphol de Amsterd\u00e3 ---- Aeroporto Charles de Gaulle (Paris) (398 km)", "to": "CDG", "value": 398.27033320195}, {"from": "AMS", "title": "Aeroporto Schiphol de Amsterd\u00e3 ---- Aeroporto Internacional Hamad (Doha) (4923 km)", "to": "DOH", "value": 4923.099104947587}, {"from": "AMS", "title": "Aeroporto Schiphol de Amsterd\u00e3 ---- Aeroporto Internacional de Dubai (5169 km)", "to": "DXB", "value": 5168.644172731163}, {"from": "AMS", "title": "Aeroporto Schiphol de Amsterd\u00e3 ---- Aeroporto Internacional John F. Kennedy (Nova York) (5848 km)", "to": "JFK", "value": 5847.530991905588}, {"from": "AMS", "title": "Aeroporto Schiphol de Amsterd\u00e3 ---- Aeroporto Internacional de Los Angeles (8956 km)", "to": "LAX", "value": 8955.963071544944}, {"from": "AMS", "title": "Aeroporto Schiphol de Amsterd\u00e3 ---- Aeroporto de Frankfurt (367 km)", "to": "FRA", "value": 366.57375472178785}, {"from": "AMS", "title": "Aeroporto Schiphol de Amsterd\u00e3 ---- Aeroporto Internacional do Gale\u00e3o (Rio de Janeiro) (9560 km)", "to": "GIG", "value": 9559.703878419105}, {"from": "AMS", "title": "Aeroporto Schiphol de Amsterd\u00e3 ---- Aeroporto Internacional de Guarulhos (S\u00e3o Paulo) (9775 km)", "to": "GRU", "value": 9774.929662802746}, {"from": "AMS", "title": "Aeroporto Schiphol de Amsterd\u00e3 ---- Aeroporto de Istambul (2184 km)", "to": "IST", "value": 2183.7608262157164}, {"from": "AMS", "title": "Aeroporto Schiphol de Amsterd\u00e3 ---- Aeroporto Internacional de Narita (T\u00f3quio) (9319 km)", "to": "NRT", "value": 9318.793769288975}, {"from": "DXB", "title": "Aeroporto Internacional de Dubai ---- Aeroporto Internacional John F. Kennedy (Nova York) (11002 km)", "to": "JFK", "value": 11001.529712098234}, {"from": "DXB", "title": "Aeroporto Internacional de Dubai ---- Aeroporto Internacional de Los Angeles (13400 km)", "to": "LAX", "value": 13400.095537025749}, {"from": "DXB", "title": "Aeroporto Internacional de Dubai ---- Aeroporto de Frankfurt (4843 km)", "to": "FRA", "value": 4843.2132706136545}, {"from": "DXB", "title": "Aeroporto Internacional de Dubai ---- Aeroporto Internacional do Gale\u00e3o (Rio de Janeiro) (11884 km)", "to": "GIG", "value": 11883.883824554116}, {"from": "DXB", "title": "Aeroporto Internacional de Dubai ---- Aeroporto Internacional de Guarulhos (S\u00e3o Paulo) (12217 km)", "to": "GRU", "value": 12217.0797088119}, {"from": "DXB", "title": "Aeroporto Internacional de Dubai ---- Aeroporto Internacional de Haneda (T\u00f3quio) (7935 km)", "to": "HND", "value": 7934.633050459853}, {"from": "DXB", "title": "Aeroporto Internacional de Dubai ---- Aeroporto de Istambul (3028 km)", "to": "IST", "value": 3028.3401941851625}, {"from": "DXB", "title": "Aeroporto Internacional de Dubai ---- Aeroporto Internacional de Narita (T\u00f3quio) (7979 km)", "to": "NRT", "value": 7979.188349559182}, {"from": "HND", "title": "Aeroporto Internacional de Haneda (T\u00f3quio) ---- Aeroporto Internacional de Los Angeles (8812 km)", "to": "LAX", "value": 8812.406982876031}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": true,
+        "filter": [
+            "physics"
+        ]
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+                  // if this network requires displaying the configure window,
+                  // put it in its div
+                  options.configure["container"] = document.getElementById("config");
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>
