@@ -302,7 +302,7 @@ print("Resultados salvos em resultados_metricas.csv")
 imprimir_metricas_organizadas(resultados, pares_conectados, lista_algoritmos)
 
 # Visualizar grafo com pyvis
-rede = Network(notebook=True, height="800px", width="100%", bgcolor="#222222", font_color="white")
+rede = Network(notebook=False, height="800px", width="100%", bgcolor="#000000", font_color="white")
 for aeroporto in grafo_voos.keys():
     legenda = legendas_aeroportos.get(aeroporto, aeroporto)
     rede.add_node(aeroporto, label=aeroporto, title=legenda)
@@ -314,7 +314,23 @@ for origem, destinos in grafo_voos.items():
             legenda_aresta = f"{legendas_aeroportos.get(origem, origem)} ---- {legendas_aeroportos.get(destino, destino)} ({distancia:.0f} km)"
             rede.add_edge(origem, destino, value=distancia, title=legenda_aresta)
 
-rede.show_buttons(filter_=['physics'])
+# opções de física para melhor visualização
+options = {
+  "physics": {
+    "forceAtlas2Based": {
+      "springLength": 100
+    },
+    "maxVelocity": 0,
+    "minVelocity": 0.75,
+    "solver": "forceAtlas2Based",
+    "timestep": 0.5
+  }
+}
+
+from json import dumps
+
+# Adiciona botões de física para melhor visualização
+rede.set_options(dumps(options))
 rede.save_graph("grafo_aeroportos.html")
 
 print("O arquivo grafo_aeroportos.html foi salvo.")
